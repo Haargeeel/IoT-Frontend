@@ -6,13 +6,17 @@ See all the data
 You need:
   * node (at least version 4.\*)
   * mongo (at least version 3.\*)
+
 installed on your computer.
 
 All set? Good. So on `git clone` this repo.
+
 Make sure to install all important dependencies.
+
 `npm install`
 
 OK. You are almost done. We (I) are using gulp for building our files. So run:
+
 `gulp`
 
 Nice. Now you have all the files where they should be.
