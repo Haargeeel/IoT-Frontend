@@ -15,6 +15,14 @@ var Landing = React.createClass({
   },
 
   componentDidMount: function() {
+    var context = require('rabbit.js').createContext();
+    context.on('ready', function() {
+      var sub = context.socket('SUB', {routing: 'topic'});
+      sub.pipe(process.stdout);
+      sub.connect('friss_edited_queue', '#', function() {
+        console.log('hallo');
+      });
+    });
     var m = [80, 80, 80, 80]; // margin
     var w = 1000 - m[1] - m[3];
     var h = 400 - m[0] - m[2];
