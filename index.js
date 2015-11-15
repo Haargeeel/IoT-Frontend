@@ -1,5 +1,5 @@
 var express = require('express')
-  , amqp = require('./lib/app/controller/amqp')
+  //, amqp = require('./lib/app/controller/amqp')
   , bodyParser = require('body-parser')
   , landing = require('./lib/app/controller/landing');
 
@@ -12,7 +12,7 @@ app.use(express.static(__dirname + '/build/public'));
 app.use(bodyParser.json());
 
 app.get('/',
-  amqp.init,
+  //amqp.init,
   landing.render
 );
 

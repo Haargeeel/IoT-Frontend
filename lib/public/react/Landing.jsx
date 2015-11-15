@@ -21,10 +21,10 @@ var Landing = React.createClass({
     var h = 400 - m[0] - m[2];
 
     var x = d3.scale.linear()
-              .domain([0, 60])
+              .domain([0, 10000])
               .range([0, w]);
     var y = d3.scale.linear()
-              .domain([10, 50])
+              .domain([0, 150])
               .range([h, 0]);
 
     var line = d3.svg.line()
@@ -80,8 +80,10 @@ var Landing = React.createClass({
     var that = this;
     var interval = setInterval(function() {
       var data = that.state.data;
-      var delta = Math.random() * (2 - -2) + -2;
-      data.push(data[data.length-1] + delta);
+      for (var i = 0; i < 20; i++) {
+        var delta = Math.random() * (2 - -2) + -2;
+        data.push(data[data.length-1] + delta);
+      }
       that.state.graph.append('svg:path').attr('d', that.state.line(data));
       that.setState({data: data});
       console.log('timeout');

@@ -81,6 +81,14 @@ gulp.task('rename', function() {
   })
 })
 
+gulp.task('createBuildDir', function() {
+  fs.existsSync('build') || fs.mkdirSync('build')
+  fs.existsSync('build/public') || fs.mkdirSync('build/public')
+  fs.existsSync('build/public/js') || fs.mkdirSync('build/public/js')
+  fs.existsSync('build/public/css') || fs.mkdirSync('build/public/css')
+  fs.existsSync('build/public/react') || fs.mkdirSync('build/public/react')
+})
+
 gulp.task('move', function() {
   gulp.src('lib/public/js/**')
       .pipe(gulp.dest('build/public/js'))
@@ -94,3 +102,5 @@ gulp.task('default', gulpsync.sync(['clean', 'sync', 'browserify', 'rename']))
 gulp.task('watch', function() {
   gulp.watch('lib/public/**/*', ['default'])
 })
+
+gulp.task('init', ['createBuildDir', 'default'])
