@@ -1,6 +1,7 @@
 var gulp = require('gulp')
   , jade = require('gulp-jade')
   , browserify = require('gulp-browserify')
+  , reactify = require('reactify')
   , stylus = require('gulp-stylus')
   , jshint = require('gulp-jshint')
   , rename = require('gulp-rename')
@@ -15,15 +16,9 @@ gulp.task('jade', function() {
         .pipe(gulp.dest('build/views'))
 })
 
-gulp.task('react', function() {
-  return gulp.src('lib/public/react/*.jsx')
-        .pipe(react())
-        .pipe(gulp.dest('build/public/react'))
-})
-
 gulp.task('browserify', function() {
-  return gulp.src('build/public/js/app.js')
-        .pipe(browserify())
+  return gulp.src('lib/public/js/app.js')
+        .pipe(browserify({extensions: ['.jsx']}))
         .pipe(gulp.dest('build/public/js'))
 })
 
@@ -55,11 +50,6 @@ gulp.task('clean', function() {
   cssFiles.forEach(function(file) {
     fs.unlinkSync('build/public/css/' + file);
   });
-
-  var reactFiles = fs.readdirSync('build/public/react');
-  reactFiles.forEach(function(file) {
-    fs.unlinkSync('build/public/react/' + file);
-  });
 })
 
 gulp.task('rename', function() {
@@ -86,15 +76,9 @@ gulp.task('createBuildDir', function() {
   fs.existsSync('build/public') || fs.mkdirSync('build/public')
   fs.existsSync('build/public/js') || fs.mkdirSync('build/public/js')
   fs.existsSync('build/public/css') || fs.mkdirSync('build/public/css')
-  fs.existsSync('build/public/react') || fs.mkdirSync('build/public/react')
 })
 
-gulp.task('move', function() {
-  gulp.src('lib/public/js/**')
-      .pipe(gulp.dest('build/public/js'))
-})
-
-gulp.task('sync', ['react', 'move', 'jade', 'stylus', 'fonts', 'server'])
+gulp.task('sync', ['jade', 'stylus', 'fonts', 'server'])
 gulp.task('async', ['rename'])
 
 gulp.task('default', gulpsync.sync(['clean', 'sync', 'browserify', 'rename']))

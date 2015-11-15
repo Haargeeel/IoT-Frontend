@@ -8,12 +8,18 @@
   },
   "author": "",
   "license": "ISC",
+  "browserify": {
+    "transform": [
+      "reactify"
+    ]
+  },
   "dependencies": {
     "body-parser": "^1.14.1",
     "d3": "^3.5.6",
     "express": "^4.13.3",
     "jade": "^1.11.0",
     "nib": "^1.1.0",
+    "node-jsx": "^0.13.3",
     "path": "^0.12.7",
     "react": "^0.14.2",
     "react-dom": "^0.14.2",
@@ -31,6 +37,7 @@
     "gulp-stylus": "^2.1.0",
     "gulp-sync": "^0.1.4",
     "gulp-uglify": "^1.4.2",
-    "gulp-watch": "^4.3.5"
+    "gulp-watch": "^4.3.5",
+    "reactify": "^1.1.1"
   }
 }
