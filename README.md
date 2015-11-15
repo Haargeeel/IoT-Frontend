@@ -17,8 +17,11 @@ brew install node
 Linux. I'm just guessing now but:
 
 ```
-apt-install node
+apt-get install nodejs
+apt-get install npm
 ```
+
+Maybe you have to `sudo` it. I don't know.
 
 Windows.
 
