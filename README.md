@@ -27,6 +27,8 @@ Windows.
 
 I guess going to the website, download a .exe and doubleclick it.
 
+Just in case: http://blog.teamtreehouse.com/install-node-js-npm-windows
+
 All set? Good. So on `git clone` this repo.
 
 Make sure to install all important dependencies.
