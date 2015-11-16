@@ -5,8 +5,11 @@ See all the data
 
 You need:
   * node (at least version 4.\*)
+  * dynamoDB
 
 installed on your computer.
+
+### node
 
 MAC via homebrew
 
@@ -28,6 +31,29 @@ Windows.
 I guess going to the website, download a .exe and doubleclick it.
 
 Just in case: http://blog.teamtreehouse.com/install-node-js-npm-windows
+
+### dynamodb
+
+Download the jar file from here:
+
+http://docs.aws.amazon.com/amazondynamodb/latest/gettingstartedguide/GettingStarted.JsShell.html
+
+Run the database locally with:
+
+```
+java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar -sharedDb
+```
+
+Apparently you need a AWS account for that. No problem you think it's free.
+Well, they still ask you for a credit card. For many people that's a no-go.
+
+You need to make a `~/.aws/credentials` file which looks like this:
+
+```
+[default]
+aws_access_key_id = YOUR_ACCESS_KEY_ID
+aws_secret_access_key = YOUR_SECRET_ACCESS_KEY
+```
 
 All set? Good. So on `git clone` this repo.
 
