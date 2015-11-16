@@ -1,7 +1,6 @@
 var gulp = require('gulp')
   , jade = require('gulp-jade')
   , browserify = require('gulp-browserify')
-  , reactify = require('reactify')
   , stylus = require('gulp-stylus')
   , jshint = require('gulp-jshint')
   , rename = require('gulp-rename')
