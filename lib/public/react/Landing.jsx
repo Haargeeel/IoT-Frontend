@@ -1,5 +1,7 @@
-var React = require('react'),
-    d3 = require('d3');
+var React = require('react')
+  , d3 = require('d3')
+  , Stomp = require('stompjs')
+  , SockJS = require('sockjs-client');
 
 var Landing = React.createClass({
 
@@ -15,6 +17,15 @@ var Landing = React.createClass({
   },
 
   componentDidMount: function() {
+    var sock = new SockJS('http://192.168.99.100:15674/stomp');
+    var client = Stomp.over(sock);
+    client.connect('guest', 'guest', function() {
+      console.log('connect');
+      var subscription = client
+                         .subscribe('/exchange/friss_exch/#', function(msg) {
+        console.log(msg.body);
+      });
+    });
 
     var m = [80, 80, 80, 80]; // margin
     var w = 1000 - m[1] - m[3];
@@ -86,7 +97,6 @@ var Landing = React.createClass({
       }
       that.state.graph.append('svg:path').attr('d', that.state.line(data));
       that.setState({data: data});
-      console.log('timeout');
     }, 1000);
   },
 

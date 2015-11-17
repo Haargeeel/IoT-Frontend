@@ -1,6 +1,5 @@
 require('node-jsx').install({extension: '.jsx'});
 var express = require('express')
-  //, amqp = require('./lib/app/controller/amqp')
   , bodyParser = require('body-parser')
   , landing = require('./lib/app/controller/landing')
   , test = require('./lib/app/controller/test');
