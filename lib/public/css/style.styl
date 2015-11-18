@@ -1,32 +1,30 @@
 body
   margin 0
   padding 0
+  font 10px sans-serif
 
-.chart div
+/*.chart div
   font 10px sans-serif
   background-color steelblue
   text-align right
   padding 3px
   margin 1px
-  color white
+  color white*/
 
-path
+/*path
   stroke steelblue
   stroke-width 1
-  fill none
+  fill none*/
 
-.axis
-  shape-rendering crispEdges
-
-.x.axis line
-  stroke lightgrey
-
-.x.axis .minor
-  stroke-opacity .5
-
-.x.axis path
-  display none
-
-y.axis line, .y.axis path
+.axis path,
+.axis line
   fill none
   stroke #000
+  shape-rendering crispEdges
+
+.y.axis path
+  display none
+
+.y.axis line
+  stroke #777
+  stroke-dasharray 2,2

@@ -1,7 +1,7 @@
 require('node-jsx').install({extension: '.jsx'});
 var express = require('express')
   , bodyParser = require('body-parser')
-  , landing = require('./lib/app/controller/landing')
+  , chart = require('./lib/app/controller/chart')
   , test = require('./lib/app/controller/test');
 
 var app = express();
@@ -13,7 +13,7 @@ app.use(express.static(__dirname + '/build/public'));
 app.use(bodyParser.json());
 
 app.get('/',
-  landing.render
+  chart.render
 );
 
 app.get('/createTest',
