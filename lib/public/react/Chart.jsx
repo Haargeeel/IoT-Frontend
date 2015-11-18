@@ -8,19 +8,19 @@ var Chart = React.createClass({
   getInitialState: function() {
     var data = [21, 23, 25, 30, 33, 30];
     return {
-      data: null,
-      sensorType: '',
-      dateFn: null,
-      amountFn: null,
-      svg: null,
-      x: null,
-      y: null,
-      xAxis: null,
-      yAxis: null,
-      gx: null,
-      gy: null,
-      graph: null,
-      line: null,
+      //data: null,
+      //sensorType: '',
+      //dateFn: null,
+      //amountFn: null,
+      //svg: null,
+      //x: null,
+      //y: null,
+      //xAxis: null,
+      //yAxis: null,
+      //gx: null,
+      //gy: null,
+      //graph: null,
+      //line: null,
     };
   },
 
@@ -101,36 +101,46 @@ var Chart = React.createClass({
       //this.update();
     //});
 
-    JSONData = [
-      { "id": 3, "created_at": "Sun May 05 2013", "amount": 12000},
-      { "id": 1, "created_at": "Mon May 13 2013", "amount": 2000},
-      { "id": 2, "created_at": "Thu Jun 06 2013", "amount": 17000},
-      { "id": 4, "created_at": "Thu May 09 2013", "amount": 15000},
-      { "id": 5, "created_at": "Mon Jul 01 2013", "amount": 16000}
-    ]
+    //JSONData = [
+      //{ "id": 3, "created_at": "Sun May 05 2013", "amount": 12000},
+      //{ "id": 1, "created_at": "Mon May 13 2013", "amount": 2000},
+      //{ "id": 2, "created_at": "Thu Jun 06 2013", "amount": 17000},
+      //{ "id": 4, "created_at": "Thu May 09 2013", "amount": 15000},
+      //{ "id": 5, "created_at": "Mon Jul 01 2013", "amount": 16000}
+    //]
+    JSONData = { type: 'temperatur',
+      data: [
+        {time: 1, value: 33},
+        {time: 2, value: 34},
+        {time: 3, value: 38},
+        {time: 4, value: 30},
+        {time: 5, value: 28},
+      ]};
 
     var margin = {top: 20, right: 0, bottom: 20, left: 0}
       , width = 960 - margin.right - margin.left
       , height = 500 - margin.top - margin.bottom;
     
 
-    var data = JSONData.slice()
-    var format = d3.time.format("%a %b %d %Y")
-    var amountFn = function(d) { return d.amount }
-    var dateFn = function(d) { return format.parse(d.created_at) }
+    var data = JSONData.data.slice()
+    //var format = d3.time.format("%a %b %d %Y")
+    var amountFn = function(d) { return d.value }
+    //var dateFn = function(d) { return format.parse(d.created_at) }
+    var dateFn = function(d) { return d.time }
 
-    var x = d3.time.scale()
+    //var x = d3.time.scale()
+    var x = d3.scale.linear()
       .range([0, width])
       .domain(d3.extent(data, dateFn));
 
     var y = d3.scale.linear()
-      .range([0, height])
+      .range([height, 0])
       .domain(d3.extent(data, amountFn));
 
     var xAxis = d3.svg.axis()
       .scale(x)
-      .ticks(d3.time.weeks)
-      .tickSize(6, 0)
+      //.ticks(d3.time.weeks)
+      //.tickSize(6, 0)
       .orient("bottom");
 
     var yAxis = d3.svg.axis()
@@ -244,16 +254,21 @@ var Chart = React.createClass({
     var that = this;
     setInterval(function() {
       var data = that.state.data;
-      var start = d3.min(data, that.state.dateFn)
-      var end = d3.max(data, that.state.dateFn)
-      var time = start.getTime() + Math.random() * (end.getTime() - start.getTime())
-      var date = new Date(time)
+      //var start = d3.min(data, that.state.dateFn)
+      //var end = d3.max(data, that.state.dateFn)
+      //var time = start.getTime() + Math.random() * (end.getTime() - start.getTime())
+      //var date = new Date(time)
 
+      //obj = {
+        //'id': Math.floor(Math.random() * 70),
+        //'amount': Math.floor(1000 + Math.random() * 20001),
+        //'created_at': date.toDateString()
+      //}
       obj = {
-        'id': Math.floor(Math.random() * 70),
-        'amount': Math.floor(1000 + Math.random() * 20001),
-        'created_at': date.toDateString()
+        time: data.length,
+        value: Math.random() * (40 - 20) + 20
       }
+
       data.push(obj);
       that.setState({data: data}, function() {
         that.refreshGraph()
