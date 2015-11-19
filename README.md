@@ -103,7 +103,9 @@ In your browser you can visit now `localhost:3000` to see our nice project in ac
 
 ## Preview
 
-Here is an old Screenshot:
+I still learning the d3.js functionality. It's almost Rocket Science!
+
+Here is a newer Screenshot:
 
 ![](docs/graph.png)
 
