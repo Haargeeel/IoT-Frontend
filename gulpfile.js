@@ -47,7 +47,8 @@ gulp.task('clean', function() {
 
   var cssFiles = fs.readdirSync('build/public/css');
   cssFiles.forEach(function(file) {
-    fs.unlinkSync('build/public/css/' + file);
+    if (file !== 'foundation.min.css')
+      fs.unlinkSync('build/public/css/' + file);
   });
 })
 

@@ -118,8 +118,8 @@ var Chart = React.createClass({
       ]};
 
     var margin = {top: 20, right: 0, bottom: 20, left: 0}
-      , width = 960 - margin.right - margin.left
-      , height = 500 - margin.top - margin.bottom;
+      , width = this.props.dimension[0] - margin.right - margin.left
+      , height = this.props.dimension[1] - margin.top - margin.bottom;
     
 
     var data = JSONData.data.slice()
@@ -280,10 +280,7 @@ var Chart = React.createClass({
     return (
       <div id='graph'
            className='aGraph'
-           style={{position: 'absolute',
-                   top: 20,
-                   left: 50,
-                   float: 'left'}}>
+           style={{height: this.props.dimension[1]}}>
       </div>
     );
   }
