@@ -4,18 +4,34 @@ body
   padding 0
   font 10px sans-serif
 
-/*.chart div
-  font 10px sans-serif
-  background-color steelblue
-  text-align right
-  padding 3px
-  margin 1px
-  color white*/
+textarea
+  resize none
+  background steelblue
 
-/*path
-  stroke steelblue
-  stroke-width 1
-  fill none*/
+.textarea
+  height 100%
+
+.callout
+  box-shadow: 0 0 .5em gray;
+
+.seperator-line
+  margin 5px
+
+.realtime
+  height 400px
+
+.docs-page-title
+  margin-top 1rem
+  margin-bottom 1rem
+
+/*
+ * d3
+ */
+path {
+  stroke: steelblue;
+  stroke-width: 1;
+  fill: none;
+}
 
 .axis path,
 .axis line
@@ -30,36 +46,3 @@ body
   stroke #777
   stroke-dasharray 2,2
 
-.input-area
-  margin 0 20px
-
-.seperator-line
-  margin 5px
-  width 100%
-  max-width 100%
-
-.realtime-wrapper
-  height 400px
-  width 100%
-  margin 15px auto
-  position relative
-
-  .console, .graph
-    float left
-    width 45%
-    height 100%
-    background steelblue
-  .graph
-    margin-left 10%
-    background none
-
-.button-area-wrapper
-  width 100%
-  margin 15px auto
-  position relative
-
-  .add-area, .edit-area
-    float left
-    width 45%
-  .edit-area
-    margin-left 10%

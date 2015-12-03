@@ -1,7 +1,6 @@
 var React = require('react')
   , d3 = require('d3')
-  , Stomp = require('stompjs')
-  , SockJS = require('sockjs-client');
+  , rabbit = require('../js/rabbit');
 
 var Chart = React.createClass({
 
@@ -13,34 +12,24 @@ var Chart = React.createClass({
   },
 
   componentDidMount: function() {
-    this.connectToRabbit();
-    this.createGraph();
+    this.update();
+    //this.connectToRabbit();
+    //this.createGraph();
   },
 
-  connectToRabbit: function() {
+  update: function() {
     var that = this;
-    var sock = new SockJS('http://192.168.99.100:15674/stomp');
-    var client = Stomp.over(sock);
-    client.connect('guest', 'guest', function() {
-      console.log('connect');
-      var subscription = client
-                         .subscribe('/exchange/friss_exch/#', function(msg) {
-        var data = that.state.data;
-        //var newData = JSON.parse(msg.body).values;
-        var obj = {
-          time: Date.now(),
-          value: data.length
-                  ? data[data.length - 1].value + 1
-                  : 1
-        };
-        data.push(obj);
-        if (data.length > 500)
-          data.splice(0, 1);
+    setInterval(function() {
+      var data = rabbit.getData();
+      if (data && data.length) {
         that.setState({data: data}, function() {
-          that.refreshGraph();
+          if (that.state.isGraphCreated)
+            that.refreshGraph();
+          else
+            that.createGraph();
         });
-      });
-    });
+      }
+    }, 25);
   },
 
   createGraph: function() {
@@ -60,6 +49,15 @@ var Chart = React.createClass({
       .range([height, 0])
       .domain(d3.extent(that.state.data, amountFn));
 
+    //var line = d3.svg.line()
+      //.x(function(d) {
+        //return x(dateFn(d));
+      //})
+      //.y(function(d) {
+        //return y(amountFn(d));
+      //})
+      //.interpolate('basis');
+
     var xAxis = d3.svg.axis()
       .scale(x)
       .orient("bottom");
@@ -70,7 +68,7 @@ var Chart = React.createClass({
       //.tickFormat(formatCurrency)
       .orient("right");
 
-    var svg = d3.select("#graph").append("svg")
+    var svg = d3.select("#graph").append("svg:svg")
         .attr("width", width + margin.right + margin.left)
         .attr("height", height + margin.top + margin.bottom)
       .append("g")
@@ -86,6 +84,8 @@ var Chart = React.createClass({
       .call(yAxis)
       .call(that.customAxis);
 
+    //svg.append('svg:path').attr('d', line(this.state.data));
+
 
     this.setState({height: height,
                    width: width,
@@ -97,6 +97,7 @@ var Chart = React.createClass({
                    yAxis: yAxis,
                    gx: gx,
                    gy: gy,
+                   isGraphCreated: true,
                    svg: svg}, function() {
       this.refreshGraph();
     });
@@ -126,8 +127,30 @@ var Chart = React.createClass({
       , gx = this.state.gx
       , gy = this.state.gy;
 
+    //var xMin = this.state.data[0];
+    //var xMax = this.state.data[this.state.data.length - 1];
     x.domain(d3.extent(this.state.data, this.state.dateFn));
+    //x.domain([xMin, xMax]);
     y.domain(d3.extent(this.state.data, this.state.amountFn));
+    //y.domain([0, 150]);
+
+    //var line = d3.svg.line()
+      //.x(function(d) {
+        //return x(that.state.dateFn(d));
+      //})
+      //.y(function(d) {
+        //return y(that.state.amountFn(d));
+      //})
+      //.interpolate('linear');
+
+    //svg.selectAll('path')
+      //.data([this.state.data])
+      ////.attr('transform', 'translate(' + x(1) + ')')
+      //.attr('d', line)
+      ////.transition()
+      ////.ease('linear')
+      ////.duration(25)
+      ////.attr('transform', 'translate(' + x(0) + ')');
 
     xAxis.scale(x);
     yAxis.scale(y);
@@ -142,6 +165,12 @@ var Chart = React.createClass({
       .call(that.customAxis);
 
     gy.call(that.customAxis);
+
+    //var lineGraph = svg.append('path')
+                       //.attr('d', line(this.state.data))
+                       //.attr('stroke', 'blue')
+                       //.attr('stroke-width', 2)
+                       //.attr('fill', 'none');
 
     var circles = svg.selectAll('circle').data(this.state.data);
     circles.transition()

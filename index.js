@@ -2,6 +2,8 @@ require('node-jsx').install({extension: '.jsx'});
 var express = require('express')
   , bodyParser = require('body-parser')
   , chart = require('./lib/app/controller/chart')
+  //, login = require('./lib/app/controller/login')
+  //, gateways = require('./lib/app/controller/gateways')
   , dashboard = require('./lib/app/controller/dashboard')
   , test = require('./lib/app/controller/test')
   , usercontroller = require('./lib/app/controller/usercontroller');
@@ -14,6 +16,8 @@ app.set('view engine', 'jade');
 app.use(express.static(__dirname + '/build/public'));
 app.use(bodyParser.json());
 
+// Frontend
+
 app.get('/',
   dashboard.render
 );
@@ -22,12 +26,19 @@ app.get('/chart',
   chart.render
 );
 
-/* Dynamo */
+//app.get('/login',
+  //login.render
+//);
+
+//app.get('/gateways',
+  //gateways.render
+//);
+
 app.get('/createTest',
   test.createTable
 );
 
-/* REST */
+// Api
 
 app.get('/users/all',
   usercontroller.allUsers
