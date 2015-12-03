@@ -12,6 +12,16 @@ var Chart = React.createClass({
   },
 
   componentDidMount: function() {
+    //var that = this;
+    //console.log('mount');
+    //setTimeout(function() {
+      //console.log('first timeout over');
+      //that.setState({data: rabbit.getTest});
+      //setTimeout(function() {
+        //console.log('second timeout over');
+        //that.createGraph()
+      //}, 4000);
+    //}, 1000);
     this.update();
     //this.connectToRabbit();
     //this.createGraph();
@@ -19,17 +29,19 @@ var Chart = React.createClass({
 
   update: function() {
     var that = this;
-    setInterval(function() {
-      var data = rabbit.getData();
-      if (data && data.length) {
-        that.setState({data: data}, function() {
-          if (that.state.isGraphCreated)
-            that.refreshGraph();
-          else
-            that.createGraph();
-        });
-      }
-    }, 25);
+    setTimeout(function() {
+      setInterval(function() {
+        var data = rabbit.getTest();
+        if (data && data.length) {
+          that.setState({data: data}, function() {
+            if (that.state.isGraphCreated)
+              that.refreshGraph();
+            else
+              that.createGraph();
+          });
+        }
+      }, 25);
+    }, 1000);
   },
 
   createGraph: function() {
@@ -39,24 +51,27 @@ var Chart = React.createClass({
       , height = this.props.dimension[1] - margin.top - margin.bottom;
     
     var amountFn = function(d) { return d.value }
-    var dateFn = function(d) { return Math.floor((d.time - that.state.startTime) / 1000) }
+    //var dateFn = function(d) { return Math.floor((d.time - that.state.startTime) / 1000) }
+    var dateFn = function(d) { return (d.time - that.state.startTime) / 100 }
 
     var x = d3.scale.linear()
       .range([0, width])
-      .domain(d3.extent(that.state.data, dateFn));
+      //.domain(d3.extent(that.state.data, dateFn));
+      .domain([0, that.state.data[0].length + 10]);
 
     var y = d3.scale.linear()
       .range([height, 0])
-      .domain(d3.extent(that.state.data, amountFn));
+      //.domain(d3.extent(that.state.data, amountFn));
+      .domain([0, 200]);
 
-    //var line = d3.svg.line()
-      //.x(function(d) {
-        //return x(dateFn(d));
-      //})
-      //.y(function(d) {
-        //return y(amountFn(d));
-      //})
-      //.interpolate('basis');
+    var line = d3.svg.line()
+      .x(function(d) {
+        return x(dateFn(d));
+      })
+      .y(function(d) {
+        return y(amountFn(d));
+      })
+      .interpolate('basis');
 
     var xAxis = d3.svg.axis()
       .scale(x)
@@ -68,7 +83,7 @@ var Chart = React.createClass({
       //.tickFormat(formatCurrency)
       .orient("right");
 
-    var svg = d3.select("#graph").append("svg:svg")
+    var svg = d3.select("#graph").append("svg")
         .attr("width", width + margin.right + margin.left)
         .attr("height", height + margin.top + margin.bottom)
       .append("g")
@@ -84,6 +99,22 @@ var Chart = React.createClass({
       .call(yAxis)
       .call(that.customAxis);
 
+    var lines = svg.selectAll('.line').data(this.state.data);
+
+    var aLineContainer = lines.enter().append('g').attr('class', 'line');
+
+    aLineContainer.append('path')
+      .attr('d', line);
+
+    aLineContainer.selectAll(".dot")
+      .data( function( d, i ) { return d; } )
+      .enter()
+      //.append("circle")
+      //.attr("class", "dot")
+      //.attr("cx", line.x())
+      //.attr("cy", line.y())
+      //.attr("r", 2);
+
     //svg.append('svg:path').attr('d', line(this.state.data));
 
 
@@ -93,13 +124,16 @@ var Chart = React.createClass({
                    amountFn: amountFn,
                    x: x,
                    y: y,
+                   line: line,
+                   lines: lines,
+                   aLineContainer: aLineContainer,
                    xAxis: xAxis,
                    yAxis: yAxis,
                    gx: gx,
                    gy: gy,
                    isGraphCreated: true,
                    svg: svg}, function() {
-      this.refreshGraph();
+      //this.refreshGraph();
     });
   },
 
@@ -114,7 +148,7 @@ var Chart = React.createClass({
     var lastRefresh = this.state.lastRefresh
                       ? this.state.lastRefresh
                       : this.state.startTime;
-    if (Date.now() - lastRefresh < 25) return;
+    //if (Date.now() - lastRefresh < 25) return;
 
     var that = this
       , svg = this.state.svg
@@ -122,17 +156,38 @@ var Chart = React.createClass({
       , width = this.state.width
       , x = this.state.x
       , y = this.state.y
+      , lines = this.state.lines
+      , line = this.state.line
+      , aLineContainer = this.state.aLineContainer
       , xAxis = this.state.xAxis
       , yAxis = this.state.yAxis
       , gx = this.state.gx
       , gy = this.state.gy;
 
-    //var xMin = this.state.data[0];
-    //var xMax = this.state.data[this.state.data.length - 1];
-    x.domain(d3.extent(this.state.data, this.state.dateFn));
+    var xMin = this.state.data[0];
+    var xMax = this.state.data[0][this.state.data.length - 1];
+    x.domain(d3.extent(this.state.data[0], this.state.dateFn));
     //x.domain([xMin, xMax]);
-    y.domain(d3.extent(this.state.data, this.state.amountFn));
+    //y.domain(d3.extent(this.state.data, this.state.amountFn));
     //y.domain([0, 150]);
+
+    lines = svg.selectAll('g').data(this.state.data);
+
+    //aLineContainer = lines.enter().append('g');
+
+    aLineContainer.selectAll('path').remove();
+
+    aLineContainer.append('path')
+      .attr('d', line);
+
+    aLineContainer.selectAll(".dot")
+      .data( function( d, i ) { return d; } )
+      .enter()
+      //.append("circle")
+      //.attr("class", "dot")
+      //.attr("cx", line.x())
+      //.attr("cy", line.y())
+      //.attr("r", 2);
 
     //var line = d3.svg.line()
       //.x(function(d) {
@@ -172,23 +227,26 @@ var Chart = React.createClass({
                        //.attr('stroke-width', 2)
                        //.attr('fill', 'none');
 
-    var circles = svg.selectAll('circle').data(this.state.data);
-    circles.transition()
-      .attr("cx", function(d) { return x(that.state.dateFn(d)) })
-      .attr("cy", function(d) { return y(that.state.amountFn(d)) }) 
+    //var circles = svg.selectAll('circle').data(this.state.data);
+    //circles.transition()
+      //.attr("cx", function(d) { return x(that.state.dateFn(d)) })
+      //.attr("cy", function(d) { return y(that.state.amountFn(d)) })
 
-    circles.enter()
-      .append("svg:circle")
-      .attr("r", 2)
-      .attr("cx", function(d) { return x(that.state.dateFn(d)) })
-      .attr("cy", function(d) { return y(that.state.amountFn(d)) }) 
+    //circles.enter()
+      //.append("svg:circle")
+      //.attr("r", 2)
+      //.attr("cx", function(d) { return x(that.state.dateFn(d)) })
+      //.attr("cy", function(d) { return y(that.state.amountFn(d)) })
 
-    circles.exit()
-      .remove();
+    //circles.exit()
+      //.remove();
 
     this.setState({svg: svg,
                    x: x,
                    y: y,
+                   line: line,
+                   lines: lines,
+                   aLineContainer: aLineContainer,
                    xAxis: xAxis,
                    yAxis: yAxis,
                    gx: gx,

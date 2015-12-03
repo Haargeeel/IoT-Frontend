@@ -109,8 +109,5 @@ Here is a newer Screenshot:
 
 ![](docs/graph.png)
 
-The data here is:
+![](docs/graph_with_lines.png)
 
-```
-[4, 8, 15, 16, 23, 42]
-```
