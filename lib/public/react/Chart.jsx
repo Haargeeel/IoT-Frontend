@@ -46,10 +46,10 @@ var Chart = React.createClass({
 
   createGraph: function() {
     var that = this;
-    var margin = {top: 20, right: 0, bottom: 20, left: 0}
+    var margin = {top: 20, right: 0, bottom: 20, left: 34}
       , width = this.props.dimension[0] - margin.right - margin.left
       , height = this.props.dimension[1] - margin.top - margin.bottom;
-    
+
     var amountFn = function(d) { return d.value }
     //var dateFn = function(d) { return Math.floor((d.time - that.state.startTime) / 1000) }
     var dateFn = function(d) { return (d.time - that.state.startTime) / 100 }
@@ -75,7 +75,8 @@ var Chart = React.createClass({
 
     var xAxis = d3.svg.axis()
       .scale(x)
-      .orient("bottom");
+      .orient("bottom")
+      .tickFormat(formatDate);
 
     var yAxis = d3.svg.axis()
       .scale(y)
@@ -89,10 +90,17 @@ var Chart = React.createClass({
       .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+    svg.append("text")
+      .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
+      .attr("transform", "translate(" + (-17) + "," + (height / 2) + ")rotate(-90)")  // text is drawn off the screen top left, move down and out and rotate
+      .attr("font-size", "14px")
+      .text("Measurement per message");
+
     var gx = svg.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate(0," + height + ")")
       .call(xAxis);
+
 
     var gy = svg.append("g")
       .attr("class", "y axis")
@@ -116,6 +124,12 @@ var Chart = React.createClass({
       //.attr("r", 2);
 
     //svg.append('svg:path').attr('d', line(this.state.data));
+
+    var formatDate = function(d) {
+      console.log("yolo");
+      var tmpDate = Date.parse(d.time * 100);
+      return tmpDate.toString("hh:mm:ss");
+    };
 
 
     this.setState({height: height,
@@ -265,4 +279,3 @@ var Chart = React.createClass({
 });
 
 module.exports = Chart;
-
