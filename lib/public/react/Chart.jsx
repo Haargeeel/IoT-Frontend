@@ -12,19 +12,7 @@ var Chart = React.createClass({
   },
 
   componentDidMount: function() {
-    //var that = this;
-    //console.log('mount');
-    //setTimeout(function() {
-      //console.log('first timeout over');
-      //that.setState({data: rabbit.getTest});
-      //setTimeout(function() {
-        //console.log('second timeout over');
-        //that.createGraph()
-      //}, 4000);
-    //}, 1000);
     this.update();
-    //this.connectToRabbit();
-    //this.createGraph();
   },
 
   update: function() {
@@ -51,16 +39,14 @@ var Chart = React.createClass({
       , height = this.props.dimension[1] - margin.top - margin.bottom;
 
     var amountFn = function(d) { return d.value }
-    //var dateFn = function(d) { return Math.floor((d.time - that.state.startTime) / 1000) }
     var dateFn = function(d) { return (d.time) }
 
     var x = d3.time.scale()
       .range([0, width])
-      .domain([0, that.state.data[0].length + 10]);
+      .domain(d3.extent(that.state.data[0], dateFn));
 
     var y = d3.scale.linear()
       .range([height, 0])
-      //.domain(d3.extent(that.state.data, amountFn));
       .domain([0, 200]);
 
     var line = d3.svg.line()
@@ -70,7 +56,7 @@ var Chart = React.createClass({
       .y(function(d) {
         return y(amountFn(d));
       })
-      .interpolate('basis');
+      .interpolate('monotone');
 
     var xAxis = d3.svg.axis()
       .scale(x)
@@ -80,7 +66,6 @@ var Chart = React.createClass({
     var yAxis = d3.svg.axis()
       .scale(y)
       .tickSize(width)
-      //.tickFormat(formatCurrency)
       .orient("right");
 
     var svg = d3.select("#graph").append("svg")
@@ -98,7 +83,8 @@ var Chart = React.createClass({
     var gx = svg.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate(0," + height + ")")
-      .call(xAxis);
+      .call(xAxis)
+      .call(that.customXAxis);
 
 
     var gy = svg.append("g")
@@ -108,21 +94,15 @@ var Chart = React.createClass({
 
     var lines = svg.selectAll('.line').data(this.state.data);
 
-    var aLineContainer = lines.enter().append('g').attr('class', 'line');
+    var aLineContainer = lines.enter().append('g')
+                           .attr('stroke', function(d) {
+                             console.log(d);
+                             return d[0].color
+                           })
+                           .attr('class', 'line');
 
     aLineContainer.append('path')
       .attr('d', line);
-
-    aLineContainer.selectAll(".dot")
-      .data( function( d, i ) { return d; } )
-      .enter()
-      //.append("circle")
-      //.attr("class", "dot")
-      //.attr("cx", line.x())
-      //.attr("cy", line.y())
-      //.attr("r", 2);
-
-    //svg.append('svg:path').attr('d', line(this.state.data));
 
     this.setState({height: height,
                    width: width,
@@ -138,9 +118,7 @@ var Chart = React.createClass({
                    gx: gx,
                    gy: gy,
                    isGraphCreated: true,
-                   svg: svg}, function() {
-      //this.refreshGraph();
-    });
+                   svg: svg});
   },
 
   customAxis: function(g) {
@@ -149,12 +127,16 @@ var Chart = React.createClass({
         .attr("dy", -4);
   },
 
+  customXAxis: function(g) {
+    g.selectAll("text")
+        .attr("font-size", 10);
+  },
+
 
   refreshGraph: function() {
     var lastRefresh = this.state.lastRefresh
                       ? this.state.lastRefresh
                       : this.state.startTime;
-    //if (Date.now() - lastRefresh < 25) return;
 
     var that = this
       , svg = this.state.svg
@@ -174,47 +156,10 @@ var Chart = React.createClass({
     var xMax = this.state.data[0][this.state.data.length - 1];
     x.domain(d3.extent(this.state.data[0], this.state.dateFn));
 
-    //x.domain([xMin, xMax]);
-    //y.domain(d3.extent(this.state.data, this.state.amountFn));
-    //y.domain([0, 150]);
-
-
-    /* TODO: Following line causes NaN */
-    //lines = svg.selectAll('g').data(this.state.data);
-
-    //aLineContainer = lines.enter().append('g');
-
     aLineContainer.selectAll('path').remove();
 
     aLineContainer.append('path')
       .attr('d', line);
-
-    aLineContainer.selectAll(".dot")
-      .data( function( d, i ) { return d; } )
-      .enter()
-      //.append("circle")
-      //.attr("class", "dot")
-      //.attr("cx", line.x())
-      //.attr("cy", line.y())
-      //.attr("r", 2);
-
-    //var line = d3.svg.line()
-      //.x(function(d) {
-        //return x(that.state.dateFn(d));
-      //})
-      //.y(function(d) {
-        //return y(that.state.amountFn(d));
-      //})
-      //.interpolate('linear');
-
-    //svg.selectAll('path')
-      //.data([this.state.data])
-      ////.attr('transform', 'translate(' + x(1) + ')')
-      //.attr('d', line)
-      ////.transition()
-      ////.ease('linear')
-      ////.duration(25)
-      ////.attr('transform', 'translate(' + x(0) + ')');
 
     xAxis.scale(x);
     yAxis.scale(y);
@@ -222,33 +167,13 @@ var Chart = React.createClass({
     gx.transition()
       .call(xAxis);
 
-    gx.call(xAxis);
+    gx.call(xAxis).call(that.customXAxis);
 
     gy.transition()
       .call(yAxis)
       .call(that.customAxis);
 
     gy.call(that.customAxis);
-
-    //var lineGraph = svg.append('path')
-                       //.attr('d', line(this.state.data))
-                       //.attr('stroke', 'blue')
-                       //.attr('stroke-width', 2)
-                       //.attr('fill', 'none');
-
-    //var circles = svg.selectAll('circle').data(this.state.data);
-    //circles.transition()
-      //.attr("cx", function(d) { return x(that.state.dateFn(d)) })
-      //.attr("cy", function(d) { return y(that.state.amountFn(d)) })
-
-    //circles.enter()
-      //.append("svg:circle")
-      //.attr("r", 2)
-      //.attr("cx", function(d) { return x(that.state.dateFn(d)) })
-      //.attr("cy", function(d) { return y(that.state.amountFn(d)) })
-
-    //circles.exit()
-      //.remove();
 
     this.setState({svg: svg,
                    x: x,
@@ -259,8 +184,7 @@ var Chart = React.createClass({
                    xAxis: xAxis,
                    yAxis: yAxis,
                    gx: gx,
-                   gy: gy,
-                   lastRefresh: Date.now()});
+                   gy: gy});
   },
 
   render: function() {
