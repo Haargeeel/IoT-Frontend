@@ -11,14 +11,12 @@ var Console = React.createClass({
   },
 
   componentDidMount: function() {
-    rabbit.setConsoleTextarea(document.getElementById('textarea'));
+    rabbit.setConsoleDiv(document.getElementById('console'));
   },
 
   render: function() {
     return (
       <div id='console' className='realtime'>
-        <textarea id='textarea' className='textarea'>
-        </textarea>
       </div>
     );
   }

@@ -96,7 +96,6 @@ var Chart = React.createClass({
 
     var aLineContainer = lines.enter().append('g')
                            .attr('stroke', function(d) {
-                             console.log(d);
                              return d[0].color
                            })
                            .attr('class', 'line');
