@@ -12,7 +12,7 @@ var Dashboard = React.createClass({
 
   componentDidMount: function() {
     if (typeof window === 'undefined') return;
-    var graph = document.getElementsByClassName('graph')[0];   
+    var graph = document.getElementsByClassName('graph')[0];
     var dimension = [graph.offsetWidth, graph.offsetHeight];
     this.setState({dimension: dimension});
     rabbit.connect();
@@ -69,7 +69,7 @@ var Dashboard = React.createClass({
         {/* Input area */}
         <div className='row column'>
           <div className='callout'>
-            <h5>Input</h5>
+            <h5>Throughput</h5>
             <div className='row'>
               <div className='large-6 columns'>
               {/*<div className='console realtime'></div>*/}
@@ -121,7 +121,7 @@ var Dashboard = React.createClass({
             <h5>Cluster</h5>
           </div>
         </div>
-      </div> 
+      </div>
     );
   }
 });

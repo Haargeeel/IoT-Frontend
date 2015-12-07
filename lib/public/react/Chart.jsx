@@ -52,11 +52,10 @@ var Chart = React.createClass({
 
     var amountFn = function(d) { return d.value }
     //var dateFn = function(d) { return Math.floor((d.time - that.state.startTime) / 1000) }
-    var dateFn = function(d) { return (d.time - that.state.startTime) / 100 }
+    var dateFn = function(d) { return (d.time) }
 
-    var x = d3.scale.linear()
+    var x = d3.time.scale()
       .range([0, width])
-      //.domain(d3.extent(that.state.data, dateFn));
       .domain([0, that.state.data[0].length + 10]);
 
     var y = d3.scale.linear()
@@ -75,8 +74,8 @@ var Chart = React.createClass({
 
     var xAxis = d3.svg.axis()
       .scale(x)
-      .orient("bottom")
-      .tickFormat(formatDate);
+      .tickFormat(d3.time.format("%H:%M:%S"))
+      .orient("bottom");
 
     var yAxis = d3.svg.axis()
       .scale(y)
@@ -94,7 +93,7 @@ var Chart = React.createClass({
       .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
       .attr("transform", "translate(" + (-17) + "," + (height / 2) + ")rotate(-90)")  // text is drawn off the screen top left, move down and out and rotate
       .attr("font-size", "14px")
-      .text("Measurement per message");
+      .text("Measurements per message");
 
     var gx = svg.append("g")
       .attr("class", "x axis")
@@ -124,13 +123,6 @@ var Chart = React.createClass({
       //.attr("r", 2);
 
     //svg.append('svg:path').attr('d', line(this.state.data));
-
-    var formatDate = function(d) {
-      console.log("yolo");
-      var tmpDate = Date.parse(d.time * 100);
-      return tmpDate.toString("hh:mm:ss");
-    };
-
 
     this.setState({height: height,
                    width: width,
@@ -181,11 +173,14 @@ var Chart = React.createClass({
     var xMin = this.state.data[0];
     var xMax = this.state.data[0][this.state.data.length - 1];
     x.domain(d3.extent(this.state.data[0], this.state.dateFn));
+
     //x.domain([xMin, xMax]);
     //y.domain(d3.extent(this.state.data, this.state.amountFn));
     //y.domain([0, 150]);
 
-    lines = svg.selectAll('g').data(this.state.data);
+
+    /* TODO: Following line causes NaN */
+    //lines = svg.selectAll('g').data(this.state.data);
 
     //aLineContainer = lines.enter().append('g');
 
