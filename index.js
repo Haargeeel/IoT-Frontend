@@ -2,7 +2,7 @@ require('node-jsx').install({extension: '.jsx'});
 var express = require('express')
   , bodyParser = require('body-parser')
   , chart = require('./lib/app/controller/chart')
-  //, login = require('./lib/app/controller/login')
+  , login = require('./lib/app/controller/login')
   //, gateways = require('./lib/app/controller/gateways')
   , dashboard = require('./lib/app/controller/dashboard')
   , test = require('./lib/app/controller/test')
@@ -19,6 +19,11 @@ app.use(bodyParser.json());
 // Frontend
 
 app.get('/',
+  //dashboard.render
+  login.render
+);
+
+app.get('/dashboard',
   dashboard.render
 );
 
