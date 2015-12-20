@@ -57,7 +57,7 @@ var Dashboard = React.createClass({
             </div>
             <div className='top-bar-right'>
               <ul className='menu'>
-                <li><a href='#'>My Account</a></li>
+                <li><a href='#'>{this.props.user}</a></li>
               </ul>
             </div>
           </div>
